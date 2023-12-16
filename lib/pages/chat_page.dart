@@ -44,6 +44,14 @@ class ChatPage extends StatelessWidget {
                       '${Provider.of<ChatNotificationService>(context).itemsCount}'),
                   child: const Icon(Icons.notifications)))
         ]),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () =>
+        //       Provider.of<ChatNotificationService>(context, listen: false).add(
+        //           ChatNotification(
+        //               title: 'MAIS UMA NOTIFICAÇÃO',
+        //               body: Random().nextDouble().toString())),
+        //   child: const Icon(Icons.add),
+        // ),
         body: const SafeArea(
           child: Column(children: [
             Expanded(child: Messages()),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "288605170200",
+    "project_id": "laesant-chat",
+    "storage_bucket": "laesant-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288605170200:android:2b49e9749fc136941b316d",
+        "android_client_info": {
+          "package_name": "com.example.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlzzEB_Lju_uKclN6O-kKw6WjHEVcjPc0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
