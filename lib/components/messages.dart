@@ -26,6 +26,7 @@ class Messages extends StatelessWidget {
             return ListView.builder(
                 reverse: true,
                 itemCount: msgs.length,
+                padding: const EdgeInsets.only(bottom: 8),
                 itemBuilder: (context, index) {
                   final msg = msgs[index];
                   return MessageBubble(

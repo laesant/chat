@@ -12,12 +12,13 @@ class MessageBubble extends StatelessWidget {
 
   Widget _showUserImage(String imageUrl, BuildContext context) {
     ImageProvider? provider;
+
     if (imageUrl.startsWith('http')) {
       provider = NetworkImage(imageUrl);
-    } else if (imageUrl.startsWith('file')) {
-      provider = FileImage(File(imageUrl));
-    } else {
+    } else if (imageUrl.startsWith('assets/')) {
       provider = AssetImage(imageUrl);
+    } else {
+      provider = FileImage(File(imageUrl));
     }
 
     return CircleAvatar(
