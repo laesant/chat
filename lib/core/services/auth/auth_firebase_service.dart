@@ -6,6 +6,7 @@ import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AuthFirebaseService implements AuthService {
   static ChatUser? _currentUser;
@@ -33,19 +34,32 @@ class AuthFirebaseService implements AuthService {
   @override
   Future<void> signUp(
       String name, String email, String password, File? image) async {
-    final auth = FirebaseAuth.instance;
+    final signUp = await Firebase.initializeApp(
+      name: 'userSignup',
+      options: Firebase.app().options,
+    );
+
+    final auth = FirebaseAuth.instanceFor(app: signUp);
     UserCredential credential = await auth.createUserWithEmailAndPassword(
         email: email, password: password);
 
     if (credential.user == null) return;
+
     // 1. Upload da foto do usuário
     final String imageName = '${credential.user!.uid}.jpg';
     final String? photoURL = await _uploadUserImage(image, imageName);
+
     // 2. Atualizar atributos do usuário
     await credential.user?.updateDisplayName(name);
     await credential.user?.updatePhotoURL(photoURL);
+
+    // 2.5 Fazer o login do usuário
+    await signIn(email, password);
+
     // 3. Salvar o usuário no banco de dados (opcional)
-    await _saveChatUser(_toChatUser(credential.user!, photoURL));
+    await _saveChatUser(_toChatUser(credential.user!, name, photoURL));
+
+    await signUp.delete();
   }
 
   @override
@@ -69,9 +83,10 @@ class AuthFirebaseService implements AuthService {
         {'name': user.name, 'email': user.email, 'photoUrl': user.photoUrl});
   }
 
-  static ChatUser _toChatUser(User user, [String? photoUrl]) => ChatUser(
-      id: user.uid,
-      name: user.displayName ?? user.email!.split('@').first,
-      email: user.email!,
-      photoUrl: photoUrl ?? user.photoURL ?? 'assets/images/avatar.png');
+  static ChatUser _toChatUser(User user, [String? name, String? photoUrl]) =>
+      ChatUser(
+          id: user.uid,
+          name: name ?? user.displayName ?? user.email!.split('@').first,
+          email: user.email!,
+          photoUrl: photoUrl ?? user.photoURL ?? 'assets/images/avatar.png');
 }
