@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:chat/core/models/chat_message.dart';
 import 'package:chat/core/models/chat_user.dart';
@@ -14,24 +13,20 @@ class ChatFirebaseService implements ChatService {
   @override
   Future<ChatMessage?> save(String text, ChatUser user) async {
     final store = FirebaseFirestore.instance;
-    final docRef = await store.collection('chat').add({
-      'text': text,
-      'createdAt': DateTime.now().toIso8601String(),
-      'userId': user.id,
-      'userName': user.name,
-      'userImageUrl': user.photoUrl,
-    });
+    final msg = ChatMessage(
+        id: '',
+        text: text,
+        createdAt: DateTime.now(),
+        userId: user.id,
+        userName: user.name,
+        userImageUrl: user.photoUrl);
+    final docRef = await store
+        .collection('chat')
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .add(msg);
 
     final doc = await docRef.get();
-    final data = doc.data()!;
-
-    return ChatMessage(
-        id: doc.id,
-        text: data['text'],
-        createdAt: DateTime.parse(data['createdAt']),
-        userId: data['userId'],
-        userName: data['userName'],
-        userImageUrl: data['userImageUrl']);
+    return doc.data()!;
   }
 
   ChatMessage _fromFirestore(
@@ -55,6 +50,6 @@ class ChatFirebaseService implements ChatService {
         'createdAt': msg.createdAt.toIso8601String(),
         'userId': msg.userId,
         'userName': msg.userName,
-        'userImageUrl': msg..userImageUrl,
+        'userImageUrl': msg.userImageUrl,
       };
 }
