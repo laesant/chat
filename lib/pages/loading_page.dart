@@ -14,7 +14,9 @@ class LoadingPage extends StatelessWidget {
           children: [
             Text(
               'Carregando...',
-              style: Theme.of(context).primaryTextTheme.headlineSmall,
+              style: Theme.of(context).primaryTextTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
             ),
             const SizedBox(height: 10),
             SizedBox(
