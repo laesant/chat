@@ -12,6 +12,7 @@ class ChatFirebaseService implements ChatService {
     final snapshots = store
         .collection('chat')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .orderBy('createdAt', descending: true)
         .snapshots();
 
     return snapshots
